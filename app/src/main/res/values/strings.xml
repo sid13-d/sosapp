@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="url">https://ap-south-1.aws.data.mongodb-api.com/app/application-0-xtoiz/endpoint/</string>
+</resources>

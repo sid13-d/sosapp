@@ -6,6 +6,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.Manifest;
 import android.app.Activity;
@@ -26,6 +27,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -45,9 +47,11 @@ public class AddPerson extends AppCompatActivity {
     ContactAdapter contactAdapter;
     LinearLayout linearLayout;
     Button delete;
+    SwipeRefreshLayout swipeRefreshLayout;
 //    String[] name={"Prathamesh","Somesh","Ajinkya","Siddhesh"};
     ArrayList<String> namee = new ArrayList<String>();
     ArrayList<String> phone = new ArrayList<String>();
+    ArrayList<String> sos_list_id = new ArrayList<String>();
 //    String[] phone = {"Prathamesh","Somesh","Ajinkya","Siddhesh"};
     private String[] numbers;
     private String[] user_id;
@@ -58,8 +62,7 @@ public class AddPerson extends AppCompatActivity {
         setContentView(R.layout.activity_add_person);
         show = findViewById(R.id.showList);
         delete = findViewById(R.id.del);
-        namee.add("Title");
-        phone.add("Number");
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
 
         show.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,14 +75,24 @@ public class AddPerson extends AppCompatActivity {
             }
         });
         getUsers();
-        recyclerView = (RecyclerView) findViewById(R.id.list);
-        contactAdapter = new ContactAdapter(getApplicationContext(), namee, phone, id);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
-        recyclerView.setAdapter(contactAdapter);
-
+       getSosList();
+        Log.d("name_array", Arrays.toString(namee.toArray()));
+        Log.d("name_array", Arrays.toString(sos_list_id.toArray()));
+        Log.d("name_array", Arrays.toString(phone.toArray()));
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(false);
+                RearrangeItems();
+            }
+        });
 
     }
+    public void RearrangeItems() {
+        // Shuffling the data of ArrayList using system time
 
+        recyclerView.setAdapter(contactAdapter);
+    }
     private void getUsers() {
         RequestQueue rq = Volley.newRequestQueue(this);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, getString(R.string.url) + "get_users", null, new Response.Listener<JSONObject>() {
@@ -142,7 +155,11 @@ public class AddPerson extends AppCompatActivity {
                             String contactName = phones.getString(phones.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
 //                            Toast.makeText(getApplicationContext(), contactNumber, Toast.LENGTH_SHORT).show();
 
-                            checkUserExistence(contactNumber,contactName);
+                            try {
+                                checkUserExistence(contactNumber,contactName);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
                         Toast.makeText(getApplicationContext(), name, Toast.LENGTH_SHORT).show();
 
@@ -154,17 +171,22 @@ public class AddPerson extends AppCompatActivity {
             }
             break;
         }
+
     }
-    public void checkUserExistence(String number, String name){
+    public void checkUserExistence(String number, String name) throws JSONException {
         number = number.replace(" ","");
         number = number.replace("+91","");
+        Log.d("number", number);
        for (int i=0; i<numbers.length; i++) {
            Log.d("numbersi", numbers[i]);
            if (numbers[i].equals(number)) {
                Log.d("userNumber", ""+i);
-
-               addUserinArray(number, name);
-               Toast.makeText(getApplicationContext(), "User exists", Toast.LENGTH_SHORT).show();
+               if (!namee.contains(name) && number.contains(number)){
+               addUserinArray(number, name, i);
+               }else{
+                   Toast.makeText(getApplicationContext(), "The user has been added already", Toast.LENGTH_SHORT).show();
+               }
+              // Toast.makeText(getApplicationContext(), "User ", Toast.LENGTH_SHORT).show();
 
            }else{
                Toast.makeText(getApplicationContext(), "No user found", Toast.LENGTH_SHORT).show();
@@ -172,15 +194,63 @@ public class AddPerson extends AppCompatActivity {
        }
     }
 
-    private void addUserinArray(String number, String name) {
-        if (!namee.contains(name) && number.contains(number)){
-            namee.add(name);
-            phone.add(number);
-        }else{
-            Toast.makeText(getApplicationContext(), "The user has been added already", Toast.LENGTH_SHORT).show();
-        }
+    private void addUserinArray(String number, String name, int i) throws JSONException {
+
+            RequestQueue requestQueue = Volley.newRequestQueue(AddPerson.this);
+            JSONObject param = new JSONObject();
+            param.put("user_id", "6286912390bd466058cd9049");
+            param.put("sos_id", user_id[i]);
+            JsonObjectRequest put = new JsonObjectRequest(Request.Method.POST, getString(R.string.url) + "add_to_sos_list", param, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    Toast.makeText(getApplicationContext(), "User added to database", Toast.LENGTH_SHORT).show();
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(getApplicationContext(), "User not added to database", Toast.LENGTH_SHORT).show();
+
+                }
+            });
+            requestQueue.add(put);
+
+
 
     }
 
+    public void getSosList() {
+        RequestQueue requestQueue = Volley.newRequestQueue(AddPerson.this);
+       JsonObjectRequest fetch = new JsonObjectRequest(Request.Method.GET, getString(R.string.url) + "get_sos_list?user_id=6286912390bd466058cd9049", null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONArray jsonArray = response.getJSONArray("data");
+//                    user_id = new String[jsonArray.length()];
+                    for (int i=0; i<jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        sos_list_id.add(jsonObject.getString("_id"));
+                        namee.add(jsonObject.getString("name"));
+                        phone.add(jsonObject.getString("phone"));
+
+                    }
+                    recyclerView = (RecyclerView) findViewById(R.id.list);
+                    contactAdapter = new ContactAdapter(getApplicationContext(), namee, phone, sos_list_id);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
+                    recyclerView.setAdapter(contactAdapter);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                Log.d("response", response.toString());
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        requestQueue.add(fetch);
+    }
 
 }

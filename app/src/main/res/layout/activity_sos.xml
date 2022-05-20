@@ -6,37 +6,115 @@
     android:layout_height="match_parent"
     tools:context=".Sos">
 
-    <ImageButton
-        android:id="@+id/myimage"
-        android:layout_width="290dp"
-        android:layout_height="290dp"
-        android:layout_marginTop="140dp"
-        android:background="@android:color/transparent"
-        android:scaleType="centerCrop"
-        android:src="@drawable/btnbg"
+    <TextView
+        android:id="@+id/emergencyTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="30dp"
+        android:textFontWeight="@integer/material_motion_duration_long_2"
+        android:text="Are you in an \nemergency?"
+        android:textColor="@color/black"
+        android:textSize="30sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/display"
+        android:id="@+id/subtextTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="Keep Calm"
-        android:textAlignment="center"
-        android:textSize="30sp"
-        android:textColor="@color/purple_200"
-        app:layout_constraintTop_toBottomOf="@+id/myimage"
-        tools:layout_editor_absoluteX="0dp" />
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:text="Press the button below and help will \nreach you shortly"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/emergencyTitle" />
+
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/sosLottie"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_marginTop="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/subtextTitle"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/sos_lottie" />
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/locationCardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardElevation="0dp"
+        android:layout_marginTop="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sosLottie">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/CardViewConstraintLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:padding="15dp"
+            android:layout_marginHorizontal="20dp"
+            android:background="@drawable/location_bg"
+            app:layout_constraintTop_toBottomOf="@+id/lottieAnimationView">
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/locationPinLottie"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.4"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/location_pin" />
+
+            <TextView
+                android:id="@+id/currentLocationTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Your Current Address"
+                android:textColor="@color/black"
+                android:textSize="17dp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/locationPinLottie"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/locationText"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:text="Hadapsar Gadital, Pune-Solapur Road, Pune - 412307"
+                android:singleLine="true"
+                android:ellipsize="marquee"
+                android:marqueeRepeatLimit="marquee_forever"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/currentLocationTitle" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingbtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
-        android:layout_margin="50dp"
+        android:layout_margin="20dp"
         android:contentDescription=""
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

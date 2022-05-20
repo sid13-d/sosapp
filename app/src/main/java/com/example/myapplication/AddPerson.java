@@ -55,14 +55,13 @@ public class AddPerson extends AppCompatActivity {
 //    String[] phone = {"Prathamesh","Somesh","Ajinkya","Siddhesh"};
     private String[] numbers;
     private String[] user_id;
-    int[] id={1,2,3,4};
+//    int[] id={1,2,3,4};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_person);
         show = findViewById(R.id.showList);
         delete = findViewById(R.id.del);
-        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
 
         show.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,31 +75,27 @@ public class AddPerson extends AppCompatActivity {
         });
         getUsers();
        getSosList();
-        Log.d("name_array", Arrays.toString(namee.toArray()));
-        Log.d("name_array", Arrays.toString(sos_list_id.toArray()));
-        Log.d("name_array", Arrays.toString(phone.toArray()));
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                swipeRefreshLayout.setRefreshing(false);
-                RearrangeItems();
-            }
-        });
+
+//        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//            @Override
+//            public void onRefresh() {
+//                swipeRefreshLayout.setRefreshing(false);
+//                RearrangeItems();
+//            }
+//        });
 
     }
-    public void RearrangeItems() {
-        // Shuffling the data of ArrayList using system time
-
-        recyclerView.setAdapter(contactAdapter);
-    }
+//    public void RearrangeItems() {
+//        // Shuffling the data of ArrayList using system time
+//
+//        recyclerView.setAdapter(contactAdapter);
+//    }
     private void getUsers() {
         RequestQueue rq = Volley.newRequestQueue(this);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, getString(R.string.url) + "get_users", null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-
-
                         JSONArray phnnumber = response.getJSONArray("phone_numbers");
                         JSONArray id = response.getJSONArray("ids");
                        numbers = new String[phnnumber.length()];
@@ -176,12 +171,15 @@ public class AddPerson extends AppCompatActivity {
     public void checkUserExistence(String number, String name) throws JSONException {
         number = number.replace(" ","");
         number = number.replace("+91","");
+        number = number.replace("(","");
+        number = number.replace(")","");
+        number = number.replace("-","");
         Log.d("number", number);
        for (int i=0; i<numbers.length; i++) {
            Log.d("numbersi", numbers[i]);
            if (numbers[i].equals(number)) {
                Log.d("userNumber", ""+i);
-               if (!namee.contains(name) && number.contains(number)){
+               if (!namee.contains(name) && !phone.contains(number)){
                addUserinArray(number, name, i);
                }else{
                    Toast.makeText(getApplicationContext(), "The user has been added already", Toast.LENGTH_SHORT).show();
@@ -198,12 +196,13 @@ public class AddPerson extends AppCompatActivity {
 
             RequestQueue requestQueue = Volley.newRequestQueue(AddPerson.this);
             JSONObject param = new JSONObject();
-            param.put("user_id", "6286912390bd466058cd9049");
+            param.put("user_id", "6287fdbe90bd466058fb34e8");
             param.put("sos_id", user_id[i]);
             JsonObjectRequest put = new JsonObjectRequest(Request.Method.POST, getString(R.string.url) + "add_to_sos_list", param, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     Toast.makeText(getApplicationContext(), "User added to database", Toast.LENGTH_SHORT).show();
+                    getSosList();
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -219,10 +218,13 @@ public class AddPerson extends AppCompatActivity {
     }
 
     public void getSosList() {
-        RequestQueue requestQueue = Volley.newRequestQueue(AddPerson.this);
-       JsonObjectRequest fetch = new JsonObjectRequest(Request.Method.GET, getString(R.string.url) + "get_sos_list?user_id=6286912390bd466058cd9049", null, new Response.Listener<JSONObject>() {
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+       JsonObjectRequest fetch = new JsonObjectRequest(Request.Method.GET, getString(R.string.url) + "get_sos_list?user_id=6287fdbe90bd466058fb34e8", null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+                namee.clear();
+                phone.clear();
+                sos_list_id.clear();
                 try {
                     JSONArray jsonArray = response.getJSONArray("data");
 //                    user_id = new String[jsonArray.length()];

@@ -38,11 +38,13 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactH
     List<String> id;
     TextView notificationDesc;
     Button del;
+    AddPerson ap;
     public ContactAdapter(Context context, ArrayList<String> title, ArrayList<String> desc, ArrayList<String> id) {
         this.title = title;
         this.desc = desc;
         this.id = id;
         this.context = context;
+        this.ap = new AddPerson();
     }
     @NonNull
     @Override
@@ -57,20 +59,6 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactH
 
         holder.notiTitle.setText(title.get(position));
         holder.notiDesc.setText(desc.get(position));
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                notificationDesc = (TextView) v.findViewById(R.id.NotificationDesc);
-
-                int noti =  (notificationDesc.getVisibility() == View.GONE)? View.VISIBLE : View.GONE;
-                //int delnoti =  (del.getVisibility() == View.GONE)? View.VISIBLE : View.GONE;
-
-                TransitionManager.beginDelayedTransition(holder.cardView, new AutoTransition());
-                notificationDesc.setVisibility(noti);
-                //del.setVisibility(delnoti);
-            }
-
-        });
         del = view.findViewById(R.id.del);
         del.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,7 +66,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactH
                 RequestQueue requestQueue = Volley.newRequestQueue(v.getContext());
                 JSONObject param = new JSONObject();
                 try {
-                    param.put("user_id", "6286912390bd466058cd9049");
+                    param.put("user_id", "6287fdbe90bd466058fb34e8");
                     param.put("sos_id", id.get(position));
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -88,6 +76,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactH
                     @Override
                     public void onResponse(JSONObject response) {
                         Toast.makeText(v.getContext(), "User Removed", Toast.LENGTH_SHORT).show();
+                        ap.getSosList();
                     }
                 }, new Response.ErrorListener() {
                     @Override
@@ -97,8 +86,9 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactH
                     }
                 });
                 requestQueue.add(delete);
-                Intent intent = new Intent(context, AddPerson.class);
-                ((Activity) context).startActivity(intent);
+
+//                Intent intent = new Intent(context, AddPerson.class);
+//                ((Activity) context).startActivity(intent);
             }
         });
     }
@@ -114,8 +104,8 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactH
 
         public ContactHolder(@NonNull View itemView) {
             super(itemView);
-            notiTitle = (TextView) itemView.findViewById(R.id.notificationTitle);
-            notiDesc = (TextView) itemView.findViewById(R.id.NotificationDesc);
+            notiTitle = (TextView) itemView.findViewById(R.id.personName);
+            notiDesc = (TextView) itemView.findViewById(R.id.personPhone);
             cardView = (CardView) itemView.findViewById(R.id.CardviewNotify);
 
         }

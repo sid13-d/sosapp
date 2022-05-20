@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,15 +21,17 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class GetStarted extends AppCompatActivity {
-EditText name, number;
-Button getStarted;
-private String token="";
+    TextInputEditText name, number;
+    MaterialButton getStarted;
+    private String token="";
     public static final String SHARED_PREFS = "shared_prefs";
 
     // key for storing email.
@@ -41,9 +44,9 @@ private String token="";
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.get_started);
-        name = findViewById(R.id.name);
-        number = findViewById(R.id.phone);
-        getStarted = findViewById(R.id.submit);
+        name = (TextInputEditText) findViewById(R.id.name);
+        number =(TextInputEditText) findViewById(R.id.phone);
+        getStarted = (MaterialButton) findViewById(R.id.submit);
         sharedpreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
         id = sharedpreferences.getString(ID, null);
         getStarted.setOnClickListener(new View.OnClickListener() {
@@ -51,6 +54,8 @@ private String token="";
             public void onClick(View v) {
                 if (name.getText().length() !=0 && number.getText().length() == 10) {
                         generateToken();
+                    Intent intent = new Intent(getApplicationContext(), Sos.class);
+                    startActivity(intent);
 
                 }else{
                     Toast.makeText(getApplicationContext(), "Please fill correct detials", Toast.LENGTH_SHORT).show();

@@ -49,6 +49,13 @@ public class GetStarted extends android.app.Activity {
         getStarted = (MaterialButton) findViewById(R.id.submit);
         sharedpreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
         id = sharedpreferences.getString(ID, null);
+
+        if (id!=null){
+            Intent intent = new Intent(getApplicationContext(), Sos.class);
+            startActivity(intent);
+            finish();
+        }
+
         getStarted.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -116,7 +123,7 @@ public class GetStarted extends android.app.Activity {
                         editor.putString("PHONE", response.getString("phone"));
                         editor.putString("NAME", response.getString("name"));
                         editor.apply();
-                        FirebaseMessaging.getInstance().subscribeToTopic("6288b825972a8ce499fdd195").addOnCompleteListener(new OnCompleteListener<Void>() {
+                        FirebaseMessaging.getInstance().subscribeToTopic(topic_id).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 String msg = "Test message";
@@ -126,6 +133,7 @@ public class GetStarted extends android.app.Activity {
                                 }else{
                                     Intent intent = new Intent(getApplicationContext(), Sos.class);
                                     startActivity(intent);
+                                    finish();
                                     Log.d("subscribe", msg);
                                     Toast.makeText(getApplicationContext(), "Successfully Signed In", Toast.LENGTH_SHORT).show();
                                 }

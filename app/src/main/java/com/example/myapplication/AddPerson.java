@@ -11,7 +11,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.Manifest;
 import android.app.Activity;
 import android.app.TaskInfo;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -47,6 +49,15 @@ public class AddPerson extends AppCompatActivity {
     ContactAdapter contactAdapter;
     LinearLayout linearLayout;
     Button delete;
+
+    public static final String SHARED_PREFS = "shared_prefs";
+
+    // key for storing email.
+    public static final String ID = "id_key";
+
+    SharedPreferences sharedpreferences;
+    String id;
+
     SwipeRefreshLayout swipeRefreshLayout;
 //    String[] name={"Prathamesh","Somesh","Ajinkya","Siddhesh"};
     ArrayList<String> namee = new ArrayList<String>();
@@ -63,6 +74,9 @@ public class AddPerson extends AppCompatActivity {
         setContentView(R.layout.activity_add_person);
         show = findViewById(R.id.showList);
         delete = findViewById(R.id.del);
+
+        sharedpreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
+        id = sharedpreferences.getString(ID, null);
 
         show.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -176,20 +190,22 @@ public class AddPerson extends AppCompatActivity {
         number = number.replace(")","");
         number = number.replace("-","");
         Log.d("number", number);
+        Boolean flag = false;
        for (int i=0; i<numbers.length; i++) {
            Log.d("numbersi", numbers[i]);
            if (numbers[i].equals(number)) {
                Log.d("userNumber", ""+i);
                if (!namee.contains(name) && !phone.contains(number)){
-               addUserinArray(number, name, i);
+                   addUserinArray(number, name, i);
+                   flag = Boolean.TRUE;
                }else{
                    Toast.makeText(getApplicationContext(), "The user has been added already", Toast.LENGTH_SHORT).show();
                }
-              // Toast.makeText(getApplicationContext(), "User ", Toast.LENGTH_SHORT).show();
-
-           }else{
-               Toast.makeText(getApplicationContext(), "No user found", Toast.LENGTH_SHORT).show();
            }
+       }
+
+       if(flag == Boolean.FALSE){
+           Toast.makeText(getApplicationContext(), "No user found", Toast.LENGTH_SHORT).show();
        }
     }
 
@@ -197,7 +213,7 @@ public class AddPerson extends AppCompatActivity {
 
             RequestQueue requestQueue = Volley.newRequestQueue(AddPerson.this);
             JSONObject param = new JSONObject();
-            param.put("user_id", "6287fdbe90bd466058fb34e8");
+            param.put("user_id", id);
             param.put("sos_id", user_id[i]);
             JsonObjectRequest put = new JsonObjectRequest(Request.Method.POST, getString(R.string.url) + "add_to_sos_list", param, new Response.Listener<JSONObject>() {
                 @Override
@@ -220,7 +236,7 @@ public class AddPerson extends AppCompatActivity {
 
     public void getSosList() {
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-        JsonObjectRequest fetch = new JsonObjectRequest(Request.Method.GET, getString(R.string.url) + "get_sos_list?user_id=6287fdbe90bd466058fb34e8", null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest fetch = new JsonObjectRequest(Request.Method.GET, getString(R.string.url) + "get_sos_list?user_id="+id, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 namee.clear();

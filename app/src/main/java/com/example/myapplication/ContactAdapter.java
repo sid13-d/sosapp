@@ -52,7 +52,6 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactH
     public ContactAdapter.ContactHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         layoutInflater = LayoutInflater.from(parent.getContext());
         view = layoutInflater.inflate(R.layout.contact_layout, parent, false);
- //Creating the adapter object which is used to the remove the cards        
         contactAdapter = ContactAdapter.this;
         return new ContactHolder(view).linkAdapter(this);
     }

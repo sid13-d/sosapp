@@ -23,12 +23,6 @@
 
 
         <activity
-            android:name=".Location"
-            android:exported="true">
-
-        </activity>
-
-        <activity
             android:name=".AddPerson"
             android:exported="true">
 

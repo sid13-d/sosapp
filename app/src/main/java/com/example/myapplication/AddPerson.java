@@ -52,6 +52,7 @@ public class AddPerson extends AppCompatActivity {
     ArrayList<String> namee = new ArrayList<String>();
     ArrayList<String> phone = new ArrayList<String>();
     ArrayList<String> sos_list_id = new ArrayList<String>();
+    ArrayList<String> token = new ArrayList<String>();
 //    String[] phone = {"Prathamesh","Somesh","Ajinkya","Siddhesh"};
     private String[] numbers;
     private String[] user_id;
@@ -219,7 +220,7 @@ public class AddPerson extends AppCompatActivity {
 
     public void getSosList() {
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-       JsonObjectRequest fetch = new JsonObjectRequest(Request.Method.GET, getString(R.string.url) + "get_sos_list?user_id=6287fdbe90bd466058fb34e8", null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest fetch = new JsonObjectRequest(Request.Method.GET, getString(R.string.url) + "get_sos_list?user_id=6287fdbe90bd466058fb34e8", null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 namee.clear();
@@ -233,6 +234,7 @@ public class AddPerson extends AppCompatActivity {
                         sos_list_id.add(jsonObject.getString("_id"));
                         namee.add(jsonObject.getString("name"));
                         phone.add(jsonObject.getString("phone"));
+                        token.add(jsonObject.getString("token"));
 
                     }
                     recyclerView = (RecyclerView) findViewById(R.id.list);
@@ -254,5 +256,7 @@ public class AddPerson extends AppCompatActivity {
         });
         requestQueue.add(fetch);
     }
+
+
 
 }

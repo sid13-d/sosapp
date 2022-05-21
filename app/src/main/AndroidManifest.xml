@@ -31,20 +31,29 @@
         <activity
             android:name=".AddPerson"
             android:exported="true">
+
+        </activity>
+        <activity
+            android:name=".Sos"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".Sos"
-            android:exported="false" />
 
         <activity
             android:name=".GetStarted"
             android:exported="true">
 
         </activity>
+        <service
+            android:name=".Sos"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
         <service
             android:name=".GetStarted"
             android:exported="false">

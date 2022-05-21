@@ -53,9 +53,8 @@ public class GetStarted extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (name.getText().length() !=0 && number.getText().length() == 10) {
-                        generateToken();
-                    Intent intent = new Intent(getApplicationContext(), Sos.class);
-                    startActivity(intent);
+                    generateToken();
+
 
                 }else{
                     Toast.makeText(getApplicationContext(), "Please fill correct detials", Toast.LENGTH_SHORT).show();
@@ -71,12 +70,14 @@ public class GetStarted extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<String> task) {
                         if (!task.isSuccessful()) {
+                            Toast.makeText(getApplicationContext(), "Error occured please try again", Toast.LENGTH_SHORT).show();
+
                             Log.d("tokenfail", "Fetching FCM registration token failed", task.getException());
                             return;
                         }
 
                         // Get new FCM registration token
-                         token = task.getResult();
+                        token = task.getResult();
                         try {
                             addData();
                         } catch (JSONException e) {
@@ -84,8 +85,8 @@ public class GetStarted extends AppCompatActivity {
                         }
                         // Log and toast
                         //String msg = getString(R.string.msg_token_fmt, token);
-                       Log.d("token", token);
-                        Toast.makeText(getApplicationContext(), token, Toast.LENGTH_SHORT).show();
+//                       Log.d("token", token);
+//                        Toast.makeText(getApplicationContext(), token, Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -104,12 +105,24 @@ public class GetStarted extends AppCompatActivity {
                 // below two lines will put values for
                 // email and password in shared preferences.
                 try {
-                    editor.putString(ID, response.getString("insertedId"));
+                    Boolean status = response.getBoolean("status");
+                    if(status){
+                        editor.putString(ID, response.getString("insertedId"));
+                        editor.putString("PHONE", response.getString("phone"));
+                        editor.putString("NAME", response.getString("name"));
+                        editor.apply();
+                        Toast.makeText(getApplicationContext(), "Successfully signed in", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getApplicationContext(), Sos.class);
+                        startActivity(intent);
+                    }else{
+                        String msg = response.getString("msg");
+                        Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+                    }
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                editor.apply();
-                Toast.makeText(getApplicationContext(), "Inserted", Toast.LENGTH_SHORT).show();
+
             }
         }, new Response.ErrorListener() {
             @Override

@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">My Application</string>
     <string name="url">https://ap-south-1.aws.data.mongodb-api.com/app/application-0-xtoiz/endpoint/</string>
+    <string name="fcm_key">AAAA6ctJfpk:APA91bEgpzpx47PBQb05tpJtfcsh1sKMuGB2ugh6z8IhFVMxjFYpn7k2zPNOMpl5kMdbGdmk0eq7m0RfFEMEO7nKUPKYLau00muFHlKxJQINdgDZU7xlEl-VOl0UVUdisH3MKWtgKxCn/</string>
 </resources>

@@ -59,6 +59,13 @@ public class Sos extends AppCompatActivity {
             public void onClick(View view) {
                 //Toast.makeText(getApplicationContext(), "Working", Toast.LENGTH_SHORT).show();
                 getSosList();
+                try {
+                    sendAlert();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -83,12 +90,12 @@ public class Sos extends AppCompatActivity {
 //                    user_id = new String[jsonArray.length()];
                     for (int i=0; i<jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        tokens.add(jsonObject.getString("token"));
+                        tokens.add(jsonObject.getString("_id"));
                     }
 
                     Log.d("arrayCheck", "onResponse: "+Arrays.toString(tokens.toArray()));
-                    sendAlert();
-                } catch (JSONException | IOException e) {
+//                    sendAlert();
+                } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 Log.d("response", response.toString());
@@ -104,20 +111,30 @@ public class Sos extends AppCompatActivity {
     }
 
     public void sendAlert() throws JSONException, IOException {
+
+        Toast.makeText(getApplicationContext(), "hiii", Toast.LENGTH_SHORT).show();
+
         HttpClient client = HttpClientBuilder.create().build();
         HttpPost post = new HttpPost("https://fcm.googleapis.com/fcm/send");
         post.setHeader("Content-type", "application/json");
         post.setHeader("Authorization", "key="+getString(R.string.fcm_key));
 
         JSONObject message = new JSONObject();
-        message.put("to", "dHSu2casRXGG6s1Sxu-1hm:APA91bEglPUfozwWDJGmMendAX4FyEgDi2ueZbLZSwZm4vm3wMA1g6Lv1SUy_YtJC-KIwdYbxqfH-yFnBLe2mgjOjRVE-B_ZW_bNMnr7ZjT1GpATJHu7ZFwbLqYmvQitqTsg0ttPhHmj");
+        message.put("to", "/topics/6288b825972a8ce499fdd195");
         message.put("priority", "high");
 
+
+
         JSONObject notification = new JSONObject();
-        notification.put("title", "Java");
-        notification.put("body", "Notificação do Java");
+        notification.put("title", "SOS");
+        notification.put("body", "Emergency!!!!");
 
         message.put("notification", notification);
+
+        JSONObject data = new JSONObject();
+        data.put("key1", "Hello");
+
+        message.put("data", data);
 
         post.setEntity(new StringEntity(message.toString(), "UTF-8"));
         HttpResponse response = client.execute(post);

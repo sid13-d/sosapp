@@ -28,7 +28,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class GetStarted extends AppCompatActivity {
+public class GetStarted extends android.app.Activity {
     TextInputEditText name, number;
     MaterialButton getStarted;
     private String token="";
@@ -53,8 +53,12 @@ public class GetStarted extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (name.getText().length() !=0 && number.getText().length() == 10) {
-                    generateToken();
-
+//                    generateToken();
+                    try {
+                        addData();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
                 }else{
                     Toast.makeText(getApplicationContext(), "Please fill correct detials", Toast.LENGTH_SHORT).show();
@@ -92,7 +96,7 @@ public class GetStarted extends AppCompatActivity {
     }
 
     public void addData() throws JSONException {
-        RequestQueue requestQueue = Volley.newRequestQueue(GetStarted.this);
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         JSONObject param = new JSONObject();
         param.put("token", token);
         param.put("name", name.getText().toString().trim());
@@ -107,13 +111,27 @@ public class GetStarted extends AppCompatActivity {
                 try {
                     Boolean status = response.getBoolean("status");
                     if(status){
+                        String topic_id = response.getString("insertedId");
                         editor.putString(ID, response.getString("insertedId"));
                         editor.putString("PHONE", response.getString("phone"));
                         editor.putString("NAME", response.getString("name"));
                         editor.apply();
-                        Toast.makeText(getApplicationContext(), "Successfully signed in", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(getApplicationContext(), Sos.class);
-                        startActivity(intent);
+                        FirebaseMessaging.getInstance().subscribeToTopic("6288b825972a8ce499fdd195").addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                String msg = "Test message";
+                                if (!task.isSuccessful()) {
+//                                    msg = getString(R.string.msg_subscribe_failed);
+                                    Toast.makeText(getApplicationContext(), "Something went wrong!", Toast.LENGTH_SHORT).show();
+                                }else{
+                                    Intent intent = new Intent(getApplicationContext(), Sos.class);
+                                    startActivity(intent);
+                                    Log.d("subscribe", msg);
+                                    Toast.makeText(getApplicationContext(), "Successfully Signed In", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+
                     }else{
                         String msg = response.getString("msg");
                         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();

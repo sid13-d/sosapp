@@ -4,8 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.content.Context;
@@ -20,7 +18,6 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.Animation;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -76,7 +73,6 @@ public class Sos extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sos);
-
         sharedpreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
         id = sharedpreferences.getString(ID, null);
         name = sharedpreferences.getString(NAME, null);
@@ -104,12 +100,14 @@ public class Sos extends AppCompatActivity {
             public void onClick(View view) {
                 //Toast.makeText(getApplicationContext(), "Working", Toast.LENGTH_SHORT).show();
                 getSosList();
-                try {
-                    sendAlert();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                if (getSosList()){
+                    try {
+                        sendAlert();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -122,8 +120,6 @@ public class Sos extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-
 
     }
 
@@ -169,7 +165,7 @@ public class Sos extends AppCompatActivity {
         });
     }
 
-    public void getSosList() {
+    public boolean getSosList() {
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         JsonObjectRequest fetch = new JsonObjectRequest(Request.Method.GET, getString(R.string.url) + "get_sos_list?user_id="+id, null, new Response.Listener<JSONObject>() {
             @Override
@@ -198,6 +194,7 @@ public class Sos extends AppCompatActivity {
             }
         });
         requestQueue.add(fetch);
+        return true;
     }
 
     public void sendAlert() throws JSONException, IOException {
@@ -207,7 +204,7 @@ public class Sos extends AppCompatActivity {
         }
 
         for (int i = 0; i < tokens.toArray().length; i++) {
-            Toast.makeText(getApplicationContext(), "hiii", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Alert sent!!!", Toast.LENGTH_SHORT).show();
 
             HttpClient client = HttpClientBuilder.create().build();
             HttpPost post = new HttpPost("https://fcm.googleapis.com/fcm/send");

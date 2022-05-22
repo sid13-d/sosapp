@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.transition.AutoTransition;
 import android.transition.TransitionManager;
 import android.view.LayoutInflater;
@@ -40,12 +41,15 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactH
     Button del;
     AddPerson ap;
     ContactAdapter contactAdapter;
-    public ContactAdapter(Context context, ArrayList<String> title, ArrayList<String> desc, ArrayList<String> id) {
+    String u_id;
+
+    public ContactAdapter(Context context, ArrayList<String> title, ArrayList<String> desc, ArrayList<String> id, String u_id) {
         this.title = title;
         this.desc = desc;
         this.id = id;
         this.context = context;
         this.ap = new AddPerson();
+        this.u_id = u_id;
     }
     @NonNull
     @Override
@@ -58,17 +62,17 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactH
 
     @Override
     public void onBindViewHolder(@NonNull ContactAdapter.ContactHolder holder, @SuppressLint("RecyclerView") int position) {
-
         holder.notiTitle.setText(title.get(position));
         holder.notiDesc.setText(desc.get(position));
         del = view.findViewById(R.id.del);
+
         del.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 RequestQueue requestQueue = Volley.newRequestQueue(v.getContext());
                 JSONObject param = new JSONObject();
                 try {
-                    param.put("user_id", "6287fdbe90bd466058fb34e8");
+                    param.put("user_id", u_id);
                     param.put("sos_id", id.get(position));
                 } catch (JSONException e) {
                     e.printStackTrace();

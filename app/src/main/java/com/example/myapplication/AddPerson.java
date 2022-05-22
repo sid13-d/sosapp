@@ -254,7 +254,7 @@ public class AddPerson extends AppCompatActivity {
 
                     }
                     recyclerView = (RecyclerView) findViewById(R.id.list);
-                    contactAdapter = new ContactAdapter(getApplicationContext(), namee, phone, sos_list_id);
+                    contactAdapter = new ContactAdapter(getApplicationContext(), namee, phone, sos_list_id,id);
                     recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
                     recyclerView.setAdapter(contactAdapter);
 

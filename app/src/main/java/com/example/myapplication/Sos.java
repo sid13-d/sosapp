@@ -61,14 +61,17 @@ public class Sos extends AppCompatActivity {
 
     // key for storing email.
     public static final String ID = "id_key";
+    public static final String NAME = "user_name";
+    public static final String PHONE = "user_phone";
 
     SharedPreferences sharedpreferences;
-    String id;
+    String id,name,phone;
     ArrayList<String> tokens = new ArrayList<String>();
     TextView currentLocation;
     FusedLocationProviderClient fusedLocationProviderClient;
     List<Address> addresses;
     ConstraintLayout cardViewConstraintLayout;
+    Location location;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,6 +79,16 @@ public class Sos extends AppCompatActivity {
 
         sharedpreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
         id = sharedpreferences.getString(ID, null);
+        name = sharedpreferences.getString(NAME, null);
+        Log.d("namecheck", "onCreate: "+name);
+
+        currentLocation = (TextView) findViewById(R.id.locationText);
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        if (ActivityCompat.checkSelfPermission(Sos.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            getLocation();
+        } else {
+            ActivityCompat.requestPermissions(Sos.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
+        }
 
         if (android.os.Build.VERSION.SDK_INT > 9)
         {
@@ -111,13 +124,7 @@ public class Sos extends AppCompatActivity {
         });
 
 
-        currentLocation = (TextView) findViewById(R.id.locationText);
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        if (ActivityCompat.checkSelfPermission(Sos.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            getLocation();
-        } else {
-            ActivityCompat.requestPermissions(Sos.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
-        }
+
     }
 
     private void getLocation() {
@@ -135,7 +142,7 @@ public class Sos extends AppCompatActivity {
         fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
             @Override
             public void onComplete(@NonNull Task<Location> task) {
-                Location location = task.getResult();
+                location = task.getResult();
                 if (location != null) {
                     try {
                         Geocoder geocoder = new Geocoder(Sos.this, Locale.getDefault());
@@ -194,6 +201,11 @@ public class Sos extends AppCompatActivity {
     }
 
     public void sendAlert() throws JSONException, IOException {
+
+        if (tokens.toArray().length == 0){
+            Toast.makeText(getApplicationContext(), "You don't have anyone added to your list!!", Toast.LENGTH_SHORT).show();
+        }
+
         for (int i = 0; i < tokens.toArray().length; i++) {
             Toast.makeText(getApplicationContext(), "hiii", Toast.LENGTH_SHORT).show();
 
@@ -207,15 +219,18 @@ public class Sos extends AppCompatActivity {
             message.put("priority", "high");
 
 
-
             JSONObject notification = new JSONObject();
             notification.put("title", "SOS");
-            notification.put("body", "Emergency!!!!");
+            notification.put("body", "Hurry "+name+" needs your help at "+addresses.get(0).getAddressLine(0));
 
             message.put("notification", notification);
 
             JSONObject data = new JSONObject();
-            data.put("key1", "Hello");
+            data.put("location", addresses.get(0).getAddressLine(0));
+            data.put("lat", location.getLatitude());
+            data.put("long", location.getLongitude());
+            Log.d("location", "sendAlert: "+location.getLatitude());
+            Log.d("location", "sendAlert: "+location.getLongitude());
 
             message.put("data", data);
 

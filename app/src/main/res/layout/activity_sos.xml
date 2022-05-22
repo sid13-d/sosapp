@@ -96,7 +96,7 @@
                 android:id="@+id/locationText"
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"
-                android:text="Hadapsar Gadital, Pune-Solapur Road, Pune - 412307"
+                android:text="Detecting your address, keep your location on..."
                 android:singleLine="true"
                 android:ellipsize="marquee"
                 android:marqueeRepeatLimit="marquee_forever"

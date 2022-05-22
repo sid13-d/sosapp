@@ -36,9 +36,11 @@ public class GetStarted extends android.app.Activity {
 
     // key for storing email.
     public static final String ID = "id_key";
+    public static final String NAME = "user_name";
+    public static final String PHONE = "user_phone";
 
     SharedPreferences sharedpreferences;
-    String id;
+    String id,u_name,phone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,8 +122,8 @@ public class GetStarted extends android.app.Activity {
                     if(status){
                         String topic_id = response.getString("insertedId");
                         editor.putString(ID, response.getString("insertedId"));
-                        editor.putString("PHONE", response.getString("phone"));
-                        editor.putString("NAME", response.getString("name"));
+                        editor.putString(PHONE, response.getString("phone"));
+                        editor.putString(NAME, response.getString("name"));
                         editor.apply();
                         FirebaseMessaging.getInstance().subscribeToTopic(topic_id).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override

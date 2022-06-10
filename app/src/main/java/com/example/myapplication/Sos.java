@@ -10,12 +10,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -69,10 +72,18 @@ public class Sos extends AppCompatActivity {
     List<Address> addresses;
     ConstraintLayout cardViewConstraintLayout;
     Location location;
+    String language;
+    Locale myLocale;
+    String currentLanguage = "en", currentLang;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sos);
+
+        Intent intent = getIntent();
+        language = intent.getStringExtra("lan");
+        Log.d("checklan", "onCreate: "+language);
+        setLocale(language);
         sharedpreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
         id = sharedpreferences.getString(ID, null);
         name = sharedpreferences.getString(NAME, null);
@@ -122,7 +133,18 @@ public class Sos extends AppCompatActivity {
         });
 
     }
+    public void setLocale( String localeName) {
+        myLocale = new Locale(localeName);
+        Resources res = getResources();
+        DisplayMetrics dm = res.getDisplayMetrics();
+        Configuration conf = res.getConfiguration();
+        conf.locale = myLocale;
+        res.updateConfiguration(conf, dm);
+        Intent refresh = new Intent(this, Sos.class);
+        refresh.putExtra(currentLang, localeName);
+        startActivity(refresh);
 
+    }
     private void getLocation() {
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">एसओएस ऐप</string>
+    <string name="title">क्या आप आपात स्थिति में हैं</string>
+    <string name="subTitle">नीचे दिए गए बटन को दबाएं और शीघ्र ही सहायता आप तक पहुंच जाएगी</string>
+    <string name="locationTitle">क्या आप आपात स्थिति में हैं</string>
+    <string name="remove">हटाना</string>
+    <string name="here_are_your_saviours">ये रहे आपके रक्षक</string>
+    <string name="add_contact">संपर्क जोड़ें</string>
+    <string name="get_started">शुरू हो जाओ</string>
+    <string name="name">नाम</string>
+    <string name="phone_number">फ़ोन नंबर</string>
+    <string name="savior">रक्षक</string>
+</resources>

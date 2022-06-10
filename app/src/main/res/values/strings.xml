@@ -1,5 +1,15 @@
 <resources>
     <string name="app_name">My Application</string>
-    <string name="url">https://ap-south-1.aws.data.mongodb-api.com/app/application-0-xtoiz/endpoint/</string>
-    <string name="fcm_key">AAAA6ctJfpk:APA91bEgpzpx47PBQb05tpJtfcsh1sKMuGB2ugh6z8IhFVMxjFYpn7k2zPNOMpl5kMdbGdmk0eq7m0RfFEMEO7nKUPKYLau00muFHlKxJQINdgDZU7xlEl-VOl0UVUdisH3MKWtgKxCn/</string>
+    <string name="title">Are you in an \nemergency</string>
+    <string name="subTitle">Press the button below and help will \nreach you shortly</string>
+    <string name="locationTitle">Are you in an emergency?</string>
+    <string name="url" translatable="false">https://ap-south-1.aws.data.mongodb-api.com/app/application-0-xtoiz/endpoint/</string>
+    <string name="fcm_key" translatable="false">AAAA6ctJfpk:APA91bEgpzpx47PBQb05tpJtfcsh1sKMuGB2ugh6z8IhFVMxjFYpn7k2zPNOMpl5kMdbGdmk0eq7m0RfFEMEO7nKUPKYLau00muFHlKxJQINdgDZU7xlEl-VOl0UVUdisH3MKWtgKxCn/</string>
+    <string name="remove">Remove</string>
+    <string name="here_are_your_saviours">Here are your saviours!</string>
+    <string name="add_contact">Add Contact</string>
+    <string name="get_started">Get Started</string>
+    <string name="name">Name</string>
+    <string name="phone_number">Phone number</string>
+    <string name="savior">SAVIOR</string>
 </resources>
